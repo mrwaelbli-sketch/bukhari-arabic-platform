@@ -41,11 +41,20 @@
         const initAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                    try {
+                        // محاولة تسجيل الدخول باستخدام الرمز المميز للمنصة
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } catch (tokenError) {
+                        // إذا حدث خطأ (mismatch) بسبب استخدام إعدادات فايربيس الخاصة بك، نلجأ لتسجيل الدخول المجهول
+                        console.warn("تنبيه: فشل الدخول بالرمز المخصص (غالباً بسبب استخدام مشروع Firebase مختلف). جاري محاولة الدخول كمجهول...", tokenError);
+                        await signInAnonymously(auth);
+                    }
                 } else {
                     await signInAnonymously(auth);
                 }
-            } catch (error) { console.error("Firebase Auth Error:", error); }
+            } catch (error) { 
+                console.error("Firebase Auth Error:", error); 
+            }
         };
         
         initAuth();
