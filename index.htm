@@ -225,13 +225,25 @@
                 </div>
             </div>
 
+            <!-- قسم تنمية المهارات (جديد) -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-purple-100 space-y-4">
+                <h3 class="text-md font-black text-purple-900 border-b border-purple-50 pb-2.5 flex items-center gap-2">
+                    <i class="fa-solid fa-brain text-purple-600"></i><span>تنمية المهارات اللغوية 🧠</span>
+                </h3>
+                <div id="studentSkillsContainer" class="space-y-3">
+                    <p class="text-xs text-slate-400 font-bold text-center py-2">لا توجد مهارات مضافة حالياً.</p>
+                </div>
+            </div>
+
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-indigo-100 space-y-4">
                 <h3 class="text-md font-black text-indigo-900 border-b border-indigo-50 pb-2.5 flex items-center gap-2"><i class="fa-solid fa-envelope-open-text text-indigo-600"></i><span>رسائل معلميني 📩</span></h3>
                 <div id="studentMessagesContainer" class="space-y-3"><p class="text-xs text-slate-400 font-bold text-center py-2">لا توجد رسائل.</p></div>
             </div>
 
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
-                <h3 class="text-md font-black text-slate-850 border-b pb-2.5 flex items-center gap-2"><i class="fa-solid fa-list-ol text-emerald-600"></i><span>لوحة الشرف 🏆</span></h3>
+                <h3 class="text-md font-black text-slate-850 border-b pb-2.5 flex items-center gap-2">
+                    <i class="fa-solid fa-list-ol text-emerald-600"></i><span>لوحة الشرف (فصلي) 🏆</span>
+                </h3>
                 <div class="overflow-hidden rounded-2xl border"><table class="w-full text-right text-xs"><thead class="bg-slate-50 font-bold border-b"><tr><th class="p-3">الترتيب</th><th class="p-3">الفارس</th><th class="p-3 text-center">الفصل</th><th class="p-3 text-center">الأوسمة</th></tr></thead><tbody id="leaderboardTableBody" class="divide-y divide-slate-100"></tbody></table></div>
             </div>
             
@@ -300,7 +312,7 @@
                 </div>
             </div>
 
-            <!-- متابعة الطلاب -->
+            <!-- متابعة الطلاب (لكل فصل يدرسه المعلم) -->
             <div class="bg-white rounded-3xl p-6 shadow-sm border space-y-4">
                 <div class="flex justify-between items-center border-b pb-2.5">
                     <h2 class="text-sm font-black text-slate-800"><i class="fa-solid fa-chart-line text-emerald-600"></i> متابعة أداء طلابي</h2>
@@ -447,13 +459,42 @@
     <div id="certificateModalScreen" class="hidden fixed inset-0 bg-slate-900/85 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-3xl max-w-2xl w-full p-6 text-center space-y-4"><h1 class="text-xl font-black text-emerald-900" id="certStudentNamePlace"></h1><p id="certStudentGradePlace"></p><button onclick="document.getElementById('certificateModalScreen').classList.add('hidden')" class="px-4 py-2 bg-slate-100 rounded-xl font-bold">إغلاق</button></div></div>
     <div id="studentAttemptsModal" class="hidden fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-3xl p-6 w-full max-w-lg space-y-4"><h3 class="font-black">سجل المحاولات</h3><div class="overflow-y-auto max-h-[50vh] border rounded-xl"><table class="w-full text-right text-xs"><tbody id="adminStudentAttemptsBody" class="divide-y"></tbody></table></div><button onclick="document.getElementById('studentAttemptsModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 rounded-xl font-bold">إغلاق</button></div></div>
 
+    <!-- نافذة الرد على الرسائل -->
+    <div id="replyMessageModal" class="hidden fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-md space-y-4">
+            <h3 class="font-black text-indigo-900 border-b pb-2"><i class="fa-solid fa-reply"></i> رد على الرسالة</h3>
+            <p class="text-xs text-slate-500 font-bold" id="replyToNamePlace"></p>
+            <textarea id="replyMessageText" rows="3" placeholder="اكتب ردك هنا..." class="w-full p-3 border rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-500"></textarea>
+            <div class="flex gap-2">
+                <button onclick="submitReply()" class="flex-grow py-2 bg-indigo-600 text-white rounded-xl font-black text-sm">إرسال الرد 📤</button>
+                <button onclick="closeReplyModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-bold text-sm">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة ممارسة المهارة -->
+    <div id="skillPracticeModal" class="hidden fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-lg space-y-4 text-center">
+            <h3 class="font-black text-purple-900 border-b pb-2 text-lg" id="skillPracticeTitle"></h3>
+            <div class="p-4 bg-purple-50 rounded-xl border border-purple-100">
+                <p class="text-xl font-black text-slate-800" id="skillPracticeText"></p>
+                <p class="text-xs text-slate-500 mt-2 font-bold" id="skillPracticeExtra"></p>
+            </div>
+            
+            <div class="space-y-3" id="skillPracticeActionArea">
+                <!-- يتم تعبئة محتوى التدريب هنا (تسجيل صوت أو إدخال نص إملاء) -->
+            </div>
+
+            <button onclick="closeSkillModal()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold transition-all">إغلاق</button>
+        </div>
+    </div>
+
     <script>
-        // ================= الإعدادات والمزامنة السحابية =================
         let studentsList = [];
         let teachersList = [];
         let customQuestions = [];
         let customSkillsList = [];
-        let lessonsList = []; // المتغير الجديد لإدارة الروابط والدروس
+        let lessonsList = []; 
         let systemSettings = { adminName: "الأستاذ وائل", adminPass: "wael123", textbooks: {"1":"", "2":"", "3":"", "4":"", "5":"", "6":""} };
         
         let currentStudent = null;
@@ -462,6 +503,10 @@
         
         let activeQuizQuestions = []; let activeQuizIndex = 0; let activeQuizScore = 0; let activeQuizCategory = '';
         let selectedQuizLength = 5; let activeLessonObj = null; let studentCurrentTerm = '1';
+        
+        // متغيرات للرد على الرسائل والمهارات
+        let pendingReplyTarget = null;
+        let activeSkillObj = null;
 
         const defaultQuestionsBank = [
             { grade: "1", term: "1", type: "curriculum", category: "الْمَدُودُ وَالْحَرَكَاتُ 🍏", q: "مَا هُوَ الْحَرْفُ الْأَوَّلُ فِي كَلِمَةِ (أَسَدٌ)؟", options: ["أ", "ب", "ت", "ج"], correct: 0, addedBy: "system" }
@@ -514,7 +559,6 @@
             playError() { this.init(); const now = this.ctx.currentTime; const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); osc.connect(gain); gain.connect(this.ctx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now); osc.frequency.setValueAtTime(180, now + 0.15); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(now); osc.stop(now + 0.3); }
         };
 
-        // ================= التوجيه (Routing) والتسجيل =================
         function switchAuthAction(action) {
             document.getElementById('loginSection').classList.toggle('hidden', action !== 'login');
             document.getElementById('registerSection').classList.toggle('hidden', action !== 'register');
@@ -536,7 +580,7 @@
                 const s = studentsList.find(x => x.username.toLowerCase() === user && x.password === pass);
                 if (s) { 
                     currentStudent = s; sessionStorage.setItem('role', 'student'); 
-                    s.loginCount = (s.loginCount || 0) + 1; syncToCloud(); // عداد دخول الطالب
+                    s.loginCount = (s.loginCount || 0) + 1; syncToCloud(); 
                     setupUIForRole(); soundEngine.playSuccess(); 
                 } else showToast("بيانات الطالب خاطئة ❌", "rose");
             } else if (role === 'teacher') {
@@ -591,7 +635,6 @@
                 document.getElementById('headerStudentWelcome').innerHTML = `لوحة الإدارة الشاملة 👑`;
                 nav.innerHTML = `<button onclick="switchTab('admin-dashboard')" id="tabBtn-admin-dashboard" class="flex-grow py-2 px-1 text-amber-300 border-b-2 border-amber-400">لوحة الإدارة 👑</button>`;
                 
-                // تعبئة إعدادات الإدارة
                 document.getElementById('adminSettingsName').value = systemSettings.adminName;
                 document.getElementById('adminSettingsPass').value = systemSettings.adminPass;
                 for(let i=1; i<=6; i++) { document.getElementById('tbLink'+i).value = systemSettings.textbooks[i] || ""; }
@@ -611,9 +654,24 @@
 
         function refreshPlatformUI() {
             const role = sessionStorage.getItem('role');
-            if(role === 'student') { updateScoresAndBadgesUI(); renderLeaderboard(); renderStudentInbox(); } 
-            else if(role === 'teacher') { populateTeacherFilterOptions(); renderTeacherStudentProgressTable(); renderTeacherInbox(); } 
-            else if(role === 'admin') { renderAdminStats(); renderAdminStudentsTable(); renderAdminTeachersTable(); renderAdminLessonsTable(); updateAdminMsgTargets(); }
+            if(role === 'student') { 
+                updateScoresAndBadgesUI(); 
+                renderStudentLeaderboard(); 
+                renderStudentInbox(); 
+                renderStudentSkills(); 
+            } 
+            else if(role === 'teacher') { 
+                populateTeacherFilterOptions(); 
+                renderTeacherStudentProgressTable(); 
+                renderTeacherInbox(); 
+            } 
+            else if(role === 'admin') { 
+                renderAdminStats(); 
+                renderAdminStudentsTable(); 
+                renderAdminTeachersTable(); 
+                renderAdminLessonsTable(); 
+                updateAdminMsgTargets(); 
+            }
         }
 
         function logoutUser() { currentStudent = null; sessionStorage.clear(); document.getElementById('authScreen').classList.remove('hidden'); }
@@ -623,7 +681,6 @@
             t.classList.remove('hidden', 'translate-y-10'); setTimeout(() => { t.classList.add('translate-y-10'); setTimeout(() => t.classList.add('hidden'), 300); }, 3000);
         }
 
-        // ================= المنهج الدراسي الجديد للطالب (The 4-part Lesson Hub) =================
         function renderCurriculumLessons(term) {
             studentCurrentTerm = term;
             document.querySelectorAll('.term-filter-btn').forEach(b => b.classList.replace('bg-emerald-600', 'bg-slate-100'));
@@ -676,7 +733,7 @@
             
             activeQuizQuestions = [...questions].sort(()=>Math.random()-0.5).slice(0, Math.min(selectedQuizLength, questions.length)); 
             activeQuizIndex = 0; activeQuizScore = 0; 
-            document.getElementById('lessonDetailsCard').classList.add('hidden'); 
+            document.getElementById('curriculumSelectionCard').classList.add('hidden'); 
             document.getElementById('curriculumPlayCard').classList.remove('hidden'); 
             displayTopicQuestion(); 
         }
@@ -697,6 +754,7 @@
             document.getElementById('currQuizNextBtnContainer').classList.remove('hidden');
         }
         function goToNextQuestion() { activeQuizIndex++; if(activeQuizIndex < activeQuizQuestions.length) displayTopicQuestion(); else finishTopicQuiz(); }
+        
         function finishTopicQuiz() {
             document.getElementById('curriculumPlayCard').classList.add('hidden'); document.getElementById('currResultCard').classList.remove('hidden');
             if(!currentStudent.attempts) currentStudent.attempts = [];
@@ -704,27 +762,276 @@
             if (activeQuizScore === activeQuizQuestions.length) { document.getElementById('currResultTitle').textContent = "عظيم جداً! 🥇"; addStudentScore(activeQuizScore*2, `curr_${currentStudent.grade}_${activeQuizCategory}`); } 
             else { document.getElementById('currResultTitle').textContent = "محاولة طيبة! 🌸"; addStudentScore(1, `curr_${currentStudent.grade}_${activeQuizCategory}`); }
         }
-        function backToCurriculumSelection() { document.getElementById('lessonDetailsCard').classList.add('hidden'); document.getElementById('currResultCard').classList.add('hidden'); document.getElementById('curriculumSelectionCard').classList.remove('hidden'); renderCurriculumLessons(studentCurrentTerm); }
-        function addStudentScore(pts, mod) { currentStudent.score += pts; if(!currentStudent.completedModules.includes(mod)) currentStudent.completedModules.push(mod); syncToCloud(); updateScoresAndBadgesUI(); }
+        
+        function backToCurriculumSelection() { 
+            document.getElementById('currResultCard').classList.add('hidden'); 
+            document.getElementById('curriculumSelectionCard').classList.remove('hidden'); 
+            renderCurriculumLessons(studentCurrentTerm); 
+        }
+        
+        function addStudentScore(pts, mod) { 
+            currentStudent.score += pts; 
+            if(!currentStudent.completedModules.includes(mod)) currentStudent.completedModules.push(mod); 
+            syncToCloud(); 
+            updateScoresAndBadgesUI(); 
+        }
+        
         function updateScoresAndBadgesUI() {
             document.getElementById('headerScore').textContent = `${currentStudent.score} 🏆`; document.getElementById('statTrophies').textContent = currentStudent.score; document.getElementById('statCompletedLessons').textContent = (currentStudent.completedModules||[]).length;
             const ca = document.getElementById('certificateUnlockArea');
             if(currentStudent.score >= 15) ca.innerHTML = `<button onclick="document.getElementById('certificateModalScreen').classList.remove('hidden'); document.getElementById('certStudentNamePlace').textContent=currentStudent.name; document.getElementById('certStudentGradePlace').textContent='الصف '+currentStudent.grade+' / فصل '+(currentStudent.classId||'').replace(/[0-9]/g, '');" class="px-6 py-2 bg-amber-500 font-black rounded-xl text-xs w-full">استعراض الشهادة 🖨️</button>`;
             else ca.innerHTML = `<div class="p-4 bg-slate-50 rounded-xl border text-center text-xs text-slate-500 font-bold">اجمع ١٥ وساماً للشهادة (رصيدك ${currentStudent.score})</div>`;
         }
-        function renderLeaderboard() {
+
+        function renderStudentLeaderboard() {
             const tbody = document.getElementById('leaderboardTableBody'); if(!tbody) return; tbody.innerHTML = '';
-            [...studentsList].sort((a,b)=>b.score-a.score).slice(0,5).forEach((s,i) => { tbody.innerHTML += `<tr><td class="p-3 font-bold">${i+1}</td><td class="p-3 ${currentStudent&&s.username===currentStudent.username?'bg-emerald-50':''}">${s.name}</td><td class="p-3 text-center">${s.classId||'-'}</td><td class="p-3 text-center text-amber-600 font-black">${s.score} 🏆</td></tr>`; });
+            // تصفية الطلاب ليكونوا من نفس فصل الطالب الحالي
+            const classStudents = studentsList.filter(s => s.classId === currentStudent.classId);
+            classStudents.sort((a,b)=>b.score-a.score).slice(0,5).forEach((s,i) => { 
+                tbody.innerHTML += `<tr><td class="p-3 font-bold">${i+1}</td><td class="p-3 ${s.username===currentStudent.username?'bg-emerald-50 text-emerald-800 font-black':''}">${s.name}</td><td class="p-3 text-center">${s.classId||'-'}</td><td class="p-3 text-center text-amber-600 font-black">${s.score} 🏆</td></tr>`; 
+            });
+            if(classStudents.length === 0) tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">لا يوجد طلاب في فصلك بعد</td></tr>`;
         }
+
         function renderStudentInbox() {
             const c = document.getElementById('studentMessagesContainer'); if(!c) return; c.innerHTML = '';
             const msgs = [...(currentStudent.messages || [])].reverse();
             if(msgs.length === 0) return c.innerHTML = `<p class="text-xs text-slate-400 font-bold text-center py-2">لا توجد رسائل.</p>`;
-            let unread = 0; msgs.forEach(m => { if(!m.read) unread++; c.innerHTML += `<div class="p-3 rounded-xl border text-right text-xs ${m.read?'bg-slate-50':'bg-indigo-50 font-bold'}"><div class="flex justify-between text-[10px] text-slate-500 mb-1"><span>من: ${m.from}</span><span>${m.date}</span></div><p>${m.text}</p></div>`; });
+            let unread = 0; 
+            msgs.forEach(m => { 
+                if(!m.read) unread++; 
+                c.innerHTML += `
+                <div class="p-3 rounded-xl border text-right text-xs ${m.read?'bg-slate-50':'bg-indigo-50 font-bold'}">
+                    <div class="flex justify-between text-[10px] text-slate-500 mb-1">
+                        <span>من: ${m.from}</span><span>${m.date}</span>
+                    </div>
+                    <p class="mb-2">${m.text}</p>
+                    <div class="text-left mt-1 border-t pt-1 border-indigo-100">
+                        <button onclick="openReplyModal('${m.from}')" class="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold"><i class="fa-solid fa-reply"></i> رد</button>
+                    </div>
+                </div>`; 
+            });
             if(unread > 0) { currentStudent.messages.forEach(m=>m.read=true); syncToCloud(); }
         }
 
-        // ================= الإدارة الشاملة (المدير) والاستيراد =================
+        function renderTeacherInbox() {
+            const c = document.getElementById('teacherInboxContainer'); if(!c) return; c.innerHTML = '';
+            const msgs = [...(currentStudent.messages || [])].reverse();
+            if(msgs.length === 0) return c.innerHTML = `<p class="text-xs text-slate-400 font-bold text-center py-2">لا توجد رسائل.</p>`;
+            let unread = 0; 
+            msgs.forEach(m => { 
+                if(!m.read) unread++; 
+                c.innerHTML += `
+                <div class="p-2 rounded border text-right text-xs ${m.read?'bg-slate-50':'bg-amber-50 font-bold border-amber-200'}">
+                    <div class="flex justify-between text-[10px] text-slate-500 mb-1">
+                        <span>من: ${m.from}</span><span>${m.date}</span>
+                    </div>
+                    <p class="mb-2">${m.text}</p>
+                    <div class="text-left mt-1 border-t pt-1 border-amber-100">
+                        <button onclick="openReplyModal('${m.from}')" class="text-[10px] text-amber-600 hover:text-amber-800 font-bold"><i class="fa-solid fa-reply"></i> رد</button>
+                    </div>
+                </div>`; 
+            });
+            if(unread > 0) { currentStudent.messages.forEach(m=>m.read=true); syncToCloud(); }
+        }
+
+        function openReplyModal(toName) {
+            pendingReplyTarget = toName;
+            document.getElementById('replyToNamePlace').textContent = `إلى: ${toName}`;
+            document.getElementById('replyMessageText').value = '';
+            document.getElementById('replyMessageModal').classList.remove('hidden');
+        }
+
+        function closeReplyModal() {
+            pendingReplyTarget = null;
+            document.getElementById('replyMessageModal').classList.add('hidden');
+        }
+
+        function submitReply() {
+            const text = document.getElementById('replyMessageText').value.trim();
+            if(!text) return showToast("الرجاء كتابة الرد أولاً!", "amber");
+            
+            const msgObj = { id: Date.now(), from: currentStudent.name, text: text, date: new Date().toLocaleDateString('ar-EG'), read: false };
+            let sent = false;
+
+            if(sessionStorage.getItem('role') === 'student') {
+                const teacher = teachersList.find(t => t.name === pendingReplyTarget);
+                if(teacher) { if(!teacher.messages) teacher.messages = []; teacher.messages.push(msgObj); sent = true; }
+            } else if (sessionStorage.getItem('role') === 'teacher') {
+                if(pendingReplyTarget === 'رئيس القسم' || pendingReplyTarget === systemSettings.adminName) {
+                    sent = true;
+                } else {
+                    const student = studentsList.find(s => s.name === pendingReplyTarget);
+                    if(student) { if(!student.messages) student.messages = []; student.messages.push(msgObj); sent = true; }
+                }
+            }
+
+            if(sent) {
+                syncToCloud();
+                closeReplyModal();
+                showToast("تم إرسال الرد بنجاح 📤", "emerald");
+            } else {
+                showToast("حدث خطأ، لم يتم العثور على المستلم.", "rose");
+            }
+        }
+
+        function renderStudentSkills() {
+            const container = document.getElementById('studentSkillsContainer');
+            if(!container) return;
+            container.innerHTML = '';
+            
+            const skills = customSkillsList.filter(s => s.grade === currentStudent.grade);
+            
+            if(skills.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 font-bold text-center py-2">لا توجد مهارات مضافة حالياً.</p>`;
+                return;
+            }
+
+            skills.forEach(skill => {
+                let icon = skill.subtype === 'speech' ? '<i class="fa-solid fa-microphone text-rose-500"></i>' : '<i class="fa-solid fa-pen-nib text-indigo-500"></i>';
+                let btnText = skill.subtype === 'speech' ? 'تدرب على القراءة' : 'تدرب على الإملاء';
+                
+                container.innerHTML += `
+                <div class="p-3 bg-purple-50 border border-purple-100 rounded-xl flex justify-between items-center bounce-card">
+                    <div>
+                        <h4 class="font-black text-sm text-purple-900">${icon} ${skill.category}</h4>
+                    </div>
+                    <button onclick="openSkillPractice('${skill.id}')" class="px-3 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-bold shadow-sm hover:bg-purple-700 transition-all">${btnText}</button>
+                </div>`;
+            });
+        }
+
+        function openSkillPractice(skillId) {
+            activeSkillObj = customSkillsList.find(s => s.id === skillId);
+            if(!activeSkillObj) return;
+
+            document.getElementById('skillPracticeTitle').innerHTML = activeSkillObj.subtype === 'speech' ? '<i class="fa-solid fa-microphone text-rose-500"></i> تدريب القراءة الجهرية' : '<i class="fa-solid fa-pen-nib text-indigo-500"></i> تدريب الإملاء الناطق';
+            document.getElementById('skillPracticeText').textContent = activeSkillObj.text;
+            document.getElementById('skillPracticeExtra').textContent = activeSkillObj.extra ? `💡 ملاحظة: ${activeSkillObj.extra}` : '';
+
+            const actionArea = document.getElementById('skillPracticeActionArea');
+            if(activeSkillObj.subtype === 'speech') {
+                actionArea.innerHTML = `
+                    <div class="p-4 border-2 border-dashed border-rose-200 rounded-xl bg-rose-50 text-rose-800 text-sm font-bold cursor-pointer hover:bg-rose-100 transition-all" onclick="simulateSpeechPractice(this)">
+                        <i class="fa-solid fa-microphone text-2xl mb-2 block"></i>
+                        اضغط هنا وابدأ في قراءة النص بصوت واضح
+                    </div>`;
+            } else {
+                actionArea.innerHTML = `
+                    <input type="text" id="skillDictationInput" placeholder="اكتب ما تسمعه أو تقرأه هنا..." class="w-full p-3 border-2 border-indigo-200 rounded-xl text-center font-bold focus:ring-2 focus:ring-indigo-500" autocomplete="off">
+                    <button onclick="checkDictationAnswer()" class="w-full py-2 bg-indigo-600 text-white rounded-xl font-bold mt-2 shadow-md">تحقق من الإجابة ✅</button>
+                `;
+            }
+
+            document.getElementById('skillPracticeModal').classList.remove('hidden');
+        }
+
+        function closeSkillModal() {
+            activeSkillObj = null;
+            document.getElementById('skillPracticeModal').classList.add('hidden');
+        }
+
+        function simulateSpeechPractice(btn) {
+            btn.innerHTML = `<i class="fa-solid fa-microphone-lines text-2xl mb-2 block animate-pulse text-rose-600"></i> جاري الاستماع... (محاكاة)`;
+            setTimeout(() => {
+                soundEngine.playSuccess();
+                btn.className = "p-4 border-2 border-emerald-500 rounded-xl bg-emerald-50 text-emerald-800 text-sm font-bold";
+                btn.innerHTML = `<i class="fa-solid fa-check-circle text-2xl mb-2 block text-emerald-600"></i> قراءة ممتازة يا بطل! 🌟`;
+                addStudentScore(2, `skill_${activeSkillObj.id}`);
+            }, 3000);
+        }
+
+        function checkDictationAnswer() {
+            const input = document.getElementById('skillDictationInput').value.trim();
+            const target = activeSkillObj.plain || activeSkillObj.text; 
+            
+            if(input === target) {
+                soundEngine.playSuccess();
+                showToast("إجابة صحيحة! أحسنت 🌟", "emerald");
+                addStudentScore(2, `skill_${activeSkillObj.id}`);
+                closeSkillModal();
+            } else {
+                soundEngine.playError();
+                showToast("حاول مرة أخرى، راجع الحروف جيداً", "amber");
+            }
+        }
+
+        function populateTeacherFilterOptions() {
+            const classes = currentStudent.assignedClasses || []; 
+            const filterSelect = document.getElementById('filterTeacherStudentClass'); 
+            const msgClassSelect = document.getElementById('teacherMsgClassSelect');
+            
+            if(!filterSelect || classes.length === 0) return; 
+            
+            let html = `<option value="all">كل فصولي</option>`; 
+            classes.forEach(c => html += `<option value="${c}">فصل ${c}</option>`);
+            
+            filterSelect.innerHTML = html; 
+            if(msgClassSelect) {
+                msgClassSelect.innerHTML = html; 
+                updateTeacherMsgStudentDropdown();
+            }
+        }
+
+        function renderTeacherStudentProgressTable() {
+            const tbody = document.getElementById('teacherProgressTableBody'); if(!tbody) return; tbody.innerHTML = '';
+            const sc = document.getElementById('filterTeacherStudentClass')?.value || 'all'; const ac = currentStudent.assignedClasses || [];
+            let fs = studentsList.filter(s => ac.includes(s.classId)); if(sc !== 'all') fs = fs.filter(s => s.classId === sc);
+            fs.sort((a,b)=>b.score-a.score).forEach(s => { tbody.innerHTML += `<tr><td class="p-2 font-black">${s.name}</td><td class="p-2 text-center">${s.classId||'-'}</td><td class="p-2 text-center text-emerald-600 font-bold">${s.loginCount||0}</td><td class="p-2 text-center font-black text-amber-600">${s.score}</td><td class="p-2 text-center"><button onclick="openAttemptsModal('${s.username}')" class="px-2 py-1 bg-indigo-50 text-indigo-700 border rounded-lg text-[10px] font-bold">المحاولات</button></td></tr>`; });
+        }
+
+        function openAttemptsModal(u) { 
+            const s=studentsList.find(x=>x.username===u); 
+            if(s){ 
+                const b=document.getElementById('adminStudentAttemptsBody'); b.innerHTML=''; 
+                (s.attempts||[]).forEach(a=>{b.innerHTML+=`<tr><td class="p-2">${a.date}</td><td class="p-2 font-bold text-indigo-700">${a.module}</td><td class="p-2 text-center">${a.totalQuestions}</td><td class="p-2 text-center font-bold">${a.score}</td><td class="p-2 text-center">${Math.round((a.score/a.totalQuestions)*100)}%</td></tr>`;}); 
+                document.getElementById('studentAttemptsModal').classList.remove('hidden'); 
+            } 
+        }
+
+        function updateTeacherMsgStudentDropdown() {
+            const sc = document.getElementById('teacherMsgClassSelect').value; const sel = document.getElementById('teacherMsgStudentSelect');
+            let fs = sc !== 'all' ? studentsList.filter(s => s.classId === sc) : studentsList.filter(s => (currentStudent.assignedClasses||[]).includes(s.classId));
+            let html = `<option value="all">كل الفصل (جماعي)</option>`; fs.forEach(s => html += `<option value="${s.username}">${s.name}</option>`); sel.innerHTML = html;
+        }
+
+        function sendTeacherToStudentMessage() {
+            const txt = document.getElementById('teacherMsgBodyText').value.trim(); const tc = document.getElementById('teacherMsgClassSelect').value; const ts = document.getElementById('teacherMsgStudentSelect').value;
+            if(!txt) return showToast("اكتب الرسالة!", "rose");
+            const msg = { id: Date.now(), from: currentStudent.name, text: txt, date: new Date().toLocaleDateString('ar-EG'), read: false }; let count = 0;
+            if(ts !== 'all') { const s = studentsList.find(x=>x.username===ts); if(s) { if(!s.messages)s.messages=[]; s.messages.push(msg); count=1; } } 
+            else { studentsList.filter(s => tc==='all'?(currentStudent.assignedClasses||[]).includes(s.classId):s.classId===tc).forEach(s => { if(!s.messages)s.messages=[]; s.messages.push(msg); count++; }); }
+            if(count>0) { if(currentStudent.activityLog) currentStudent.activityLog.sentMessages = (currentStudent.activityLog.sentMessages||0)+1; syncToCloud(); document.getElementById('teacherMsgBodyText').value=''; showToast(`تم الإرسال لـ ${count} طلاب`, "emerald"); }
+        }
+
+        function adjustQuestionFormLayout(role) {
+            const type = document.getElementById('addQuestType_'+role).value;
+            if (type === 'skills') { document.getElementById('mcqOptionsArea_'+role).classList.add('hidden'); document.getElementById('skillsOptionsArea_'+role).classList.remove('hidden'); document.getElementById('skillsOptionsArea_'+role).classList.add('grid'); document.getElementById('labelQuestText_'+role).textContent = "النص المشكول (للطالب):"; } 
+            else { document.getElementById('mcqOptionsArea_'+role).classList.remove('hidden'); document.getElementById('skillsOptionsArea_'+role).classList.add('hidden'); document.getElementById('skillsOptionsArea_'+role).classList.remove('grid'); document.getElementById('labelQuestText_'+role).textContent = "نص السؤال:"; }
+        }
+
+        function addCustomQuestion(e, role) {
+            e.preventDefault(); const creator = currentStudent.username; if(currentStudent.activityLog) currentStudent.activityLog.addedQuestions = (currentStudent.activityLog.addedQuestions||0)+1;
+            const type = document.getElementById('addQuestType_'+role).value;
+            if(type === 'skills') { customSkillsList.push({ id: 's-'+Date.now(), grade: document.getElementById('addQuestGrade_'+role).value, term: document.getElementById('addQuestTerm_'+role).value, subtype: document.getElementById('addSkillSubtype_'+role).value, category: document.getElementById('addQuestCategory_'+role).value, text: document.getElementById('addQuestText_'+role).value, plain: document.getElementById('addSkillPlain_'+role).value, extra: document.getElementById('addSkillExtra_'+role).value, addedBy: creator }); } 
+            else { const correctOpt = parseInt(document.querySelector(`input[name="addQuestCorrectOpt_${role}"]:checked`).value); customQuestions.push({ id: 'q-'+Date.now(), grade: document.getElementById('addQuestGrade_'+role).value, term: document.getElementById('addQuestTerm_'+role).value, type: "curriculum", category: document.getElementById('addQuestCategory_'+role).value, q: document.getElementById('addQuestText_'+role).value, options: [document.getElementById('addQuestOpt0_'+role).value, document.getElementById('addQuestOpt1_'+role).value, document.getElementById('addQuestOpt2_'+role).value, document.getElementById('addQuestOpt3_'+role).value], correct: correctOpt, addedBy: creator }); }
+            syncToCloud(); document.getElementById(role==='Teacher'?'teacherAddQuestionForm':'sharedAddQuestionForm').reset(); adjustQuestionFormLayout(role); showToast("تمت الإضافة بنجاح!", "emerald"); refreshPlatformUI();
+        }
+
+        function generateAIQuestions(role) {
+            const text = document.getElementById('aiTextbookInput_'+role).value.trim(); const grade = document.getElementById('aiGradeSelect_'+role).value; const term = document.getElementById('aiTermSelect_'+role).value; const category = document.getElementById('aiCategorySelect_'+role).value.trim() || "فهم المقروء";
+            if (!text) return showToast("أدخل فقرة الدرس أولاً!", "rose");
+            if(currentStudent.activityLog) currentStudent.activityLog.addedQuestions = (currentStudent.activityLog.addedQuestions || 0) + 3;
+            const generated = [];
+            
+            generated.push({ grade, term, type: "curriculum", category, q: `[مستوى الفهم المقروء] مِنْ خِلَالِ فَهْمِكَ: مَا الْفِكْرَةُ الرَّئِيسِيَّةُ الَّتِي تَدُورُ حَوْلَهَا الْعِبَارَةُ؟`, options: ["مَوْضُوعُ الْفِقْرَةِ الرَّئِيسِيِّ", "فِكْرَةٌ جَانِبِيَّةٌ صَغِيرَةٌ", "مَوْضُوعٌ آخَرُ بَعِيدٌ", "لَا شَيْءَ مِمَّا سَبَقَ"], correct: 0, addedBy: currentStudent.username });
+            generated.push({ grade, term, type: "curriculum", category, q: `[مستوى التذكر] اسْتَخْرِجْ مِنَ النَّصِّ كَلِمَةً بِمَعْنَى (الْكَلِمَةِ الْمُسْتَهْدَفَةِ) كَمَا وَرَدَتْ فِي السِّياقِ:`, options: ["الْكَلِمَةُ الصَّحِيحَةُ الْمُطَابِقَةُ", "كَلِمَةٌ أُخْرَى خَاطِئَةٌ", "حَرْفُ جَرٍّ أَوْ عَطْفٍ", "فِعْلٌ لَيْسَ لَهُ عِلَاقَةٌ"], correct: 0, addedBy: currentStudent.username });
+            generated.push({ grade, term, type: "curriculum", category, q: `[مستوى التطبيق والتحليل] إِذَا طَبَّقْنَا الْقَاعِدَةَ النَّحْوِيَّةَ/الْإِمْلَائِيَّةَ لِلْكَلِمَةِ الْمُخَطَّطَةِ عَلَى كَلِمَةٍ أُخْرَى مُشَابِهَةٍ، فَمَا هُوَ النِّتَاجُ؟`, options: ["التَّطْبِيقُ السَّلِيمُ لِلْقَاعِدَةِ", "تَطْبِيقٌ بِحَرَكَةٍ خَاطِئَةٍ", "إِجَابَةٌ نَاقِصَةٌ الشُّرُوطِ", "لَا يُمْكِنُ تَطْبِيقُهَا"], correct: 0, addedBy: currentStudent.username });
+            
+            customQuestions.push(...generated); syncToCloud(); soundEngine.playSuccess(); showToast(`تم توليد ${generated.length} أسئلة وفق هرم بلوم! 🧠`, "emerald");
+            document.getElementById('aiTextbookInput_'+role).value = ''; refreshPlatformUI();
+        }
+
         function saveAdminSettings() {
             systemSettings.adminName = document.getElementById('adminSettingsName').value.trim();
             systemSettings.adminPass = document.getElementById('adminSettingsPass').value.trim();
@@ -766,7 +1073,6 @@
         }
         function deleteLesson(id) { if(confirm("حذف الدرس؟")) { lessonsList = lessonsList.filter(l=>l.id!==id); syncToCloud(); refreshPlatformUI(); } }
 
-        // قوالب الإكسل واستيرادها
         function downloadTemplate(type) {
             const wb = XLSX.utils.book_new(); let data = [];
             if(type === 'students') { data = [{"الاسم": "أحمد بطل", "اسم المستخدم": "ahmed_b", "كلمة المرور": "1234", "الصف (1-6)": 4, "حرف الفصل (A-K)": "A", "الجنس (ولد/بنت)": "ولد"}]; XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "قالب_الطلاب"); } 
@@ -821,7 +1127,6 @@
             }; reader.readAsArrayBuffer(file);
         }
 
-        // ================= الإدارة: المراسلات =================
         function updateAdminMsgTargets() {
             const type = document.getElementById('adminMsgTargetType').value; const targetSel = document.getElementById('adminMsgTargetValue');
             targetSel.innerHTML = '';
@@ -832,75 +1137,13 @@
         function sendAdminToTeacherMessage() {
             const body = document.getElementById('adminMsgBody').value.trim(); const type = document.getElementById('adminMsgTargetType').value; const targetVal = document.getElementById('adminMsgTargetValue').value;
             if(!body) return showToast("اكتب نص الرسالة!", "rose");
-            const msgObj = { id: Date.now(), from: "رئيس القسم", text: body, date: new Date().toLocaleDateString('ar-EG'), read: false }; let sentCount = 0;
+            const msgObj = { id: Date.now(), from: systemSettings.adminName, text: body, date: new Date().toLocaleDateString('ar-EG'), read: false }; let sentCount = 0;
             teachersList.forEach(t => {
                 let shouldSend = false;
                 if(type === 'all' || (type === 'specific' && t.username === targetVal) || (type === 'grade' && (t.assignedClasses||[]).some(cls => cls.startsWith(targetVal)))) shouldSend = true;
                 if (shouldSend) { if(!t.messages) t.messages = []; t.messages.push(msgObj); sentCount++; }
             });
             if(sentCount > 0) { syncToCloud(); document.getElementById('adminMsgBody').value = ''; showToast(`تم الإرسال لـ ${sentCount} معلم/ة بنجاح`, "emerald"); } else showToast("لا يوجد تطابق.", "rose");
-        }
-
-        // ================= واجهة المعلم الشاملة =================
-        function renderTeacherInbox() {
-            const c = document.getElementById('teacherInboxContainer'); if(!c) return; c.innerHTML = '';
-            const msgs = [...(currentStudent.messages || [])].reverse();
-            if(msgs.length === 0) return c.innerHTML = `<p class="text-xs text-slate-400 font-bold text-center py-2">لا توجد رسائل.</p>`;
-            let unread = 0; msgs.forEach(m => { if(!m.read) unread++; c.innerHTML += `<div class="p-2 rounded border text-right text-xs ${m.read?'bg-slate-50':'bg-amber-50 font-bold border-amber-200'}"><div class="flex justify-between text-[10px] text-slate-500 mb-1"><span>من: ${m.from}</span><span>${m.date}</span></div><p>${m.text}</p></div>`; });
-            if(unread > 0) { currentStudent.messages.forEach(m=>m.read=true); syncToCloud(); }
-        }
-        function populateTeacherFilterOptions() {
-            const classes = currentStudent.assignedClasses || []; const filterSelect = document.getElementById('filterTeacherStudentClass'); const msgClassSelect = document.getElementById('teacherMsgClassSelect');
-            if(!filterSelect || classes.length === 0) return; let html = `<option value="all">كل فصولي</option>`; classes.forEach(c => html += `<option value="${c}">فصل ${c}</option>`);
-            filterSelect.innerHTML = html; msgClassSelect.innerHTML = html; updateTeacherMsgStudentDropdown();
-        }
-        function renderTeacherStudentProgressTable() {
-            const tbody = document.getElementById('teacherProgressTableBody'); if(!tbody) return; tbody.innerHTML = '';
-            const sc = document.getElementById('filterTeacherStudentClass')?.value || 'all'; const ac = currentStudent.assignedClasses || [];
-            let fs = studentsList.filter(s => ac.includes(s.classId)); if(sc !== 'all') fs = fs.filter(s => s.classId === sc);
-            fs.sort((a,b)=>b.score-a.score).forEach(s => { tbody.innerHTML += `<tr><td class="p-2 font-black">${s.name}</td><td class="p-2 text-center">${s.classId||'-'}</td><td class="p-2 text-center text-emerald-600 font-bold">${s.loginCount||0}</td><td class="p-2 text-center font-black text-amber-600">${s.score}</td><td class="p-2 text-center"><button onclick="openAttemptsModal('${s.username}')" class="px-2 py-1 bg-indigo-50 text-indigo-700 border rounded-lg text-[10px] font-bold">المحاولات</button></td></tr>`; });
-        }
-        function updateTeacherMsgStudentDropdown() {
-            const sc = document.getElementById('teacherMsgClassSelect').value; const sel = document.getElementById('teacherMsgStudentSelect');
-            let fs = sc !== 'all' ? studentsList.filter(s => s.classId === sc) : studentsList.filter(s => (currentStudent.assignedClasses||[]).includes(s.classId));
-            let html = `<option value="all">كل الفصل (جماعي)</option>`; fs.forEach(s => html += `<option value="${s.username}">${s.name}</option>`); sel.innerHTML = html;
-        }
-        function sendTeacherToStudentMessage() {
-            const txt = document.getElementById('teacherMsgBodyText').value.trim(); const tc = document.getElementById('teacherMsgClassSelect').value; const ts = document.getElementById('teacherMsgStudentSelect').value;
-            if(!txt) return showToast("اكتب الرسالة!", "rose");
-            const msg = { id: Date.now(), from: currentStudent.name, text: txt, date: new Date().toLocaleDateString('ar-EG'), read: false }; let count = 0;
-            if(ts !== 'all') { const s = studentsList.find(x=>x.username===ts); if(s) { if(!s.messages)s.messages=[]; s.messages.push(msg); count=1; } } 
-            else { studentsList.filter(s => tc==='all'?(currentStudent.assignedClasses||[]).includes(s.classId):s.classId===tc).forEach(s => { if(!s.messages)s.messages=[]; s.messages.push(msg); count++; }); }
-            if(count>0) { if(currentStudent.activityLog) currentStudent.activityLog.sentMessages = (currentStudent.activityLog.sentMessages||0)+1; syncToCloud(); document.getElementById('teacherMsgBodyText').value=''; showToast(`تم الإرسال لـ ${count} طلاب`, "emerald"); }
-        }
-        function openAttemptsModal(u) { const s=studentsList.find(x=>x.username===u); if(s){ const b=document.getElementById('adminStudentAttemptsBody'); b.innerHTML=''; (s.attempts||[]).forEach(a=>{b.innerHTML+=`<tr><td class="p-2">${a.date}</td><td class="p-2 font-bold text-indigo-700">${a.module}</td><td class="p-2 text-center">${a.totalQuestions}</td><td class="p-2 text-center font-bold">${a.score}</td><td class="p-2 text-center">${Math.round((a.score/a.totalQuestions)*100)}%</td></tr>`;}); document.getElementById('studentAttemptsModal').classList.remove('hidden'); } }
-
-        // ================= إضافة الأسئلة والمولد الذكي =================
-        function adjustQuestionFormLayout(role) {
-            const type = document.getElementById('addQuestType_'+role).value;
-            if (type === 'skills') { document.getElementById('mcqOptionsArea_'+role).classList.add('hidden'); document.getElementById('skillsOptionsArea_'+role).classList.remove('hidden'); document.getElementById('skillsOptionsArea_'+role).classList.add('grid'); document.getElementById('labelQuestText_'+role).textContent = "النص المشكول (للطالب):"; } 
-            else { document.getElementById('mcqOptionsArea_'+role).classList.remove('hidden'); document.getElementById('skillsOptionsArea_'+role).classList.add('hidden'); document.getElementById('skillsOptionsArea_'+role).classList.remove('grid'); document.getElementById('labelQuestText_'+role).textContent = "نص السؤال:"; }
-        }
-        function addCustomQuestion(e, role) {
-            e.preventDefault(); const creator = currentStudent.username; if(currentStudent.activityLog) currentStudent.activityLog.addedQuestions = (currentStudent.activityLog.addedQuestions||0)+1;
-            const type = document.getElementById('addQuestType_'+role).value;
-            if(type === 'skills') { customSkillsList.push({ id: 's-'+Date.now(), grade: document.getElementById('addQuestGrade_'+role).value, term: document.getElementById('addQuestTerm_'+role).value, subtype: document.getElementById('addSkillSubtype_'+role).value, category: document.getElementById('addQuestCategory_'+role).value, text: document.getElementById('addQuestText_'+role).value, plain: document.getElementById('addSkillPlain_'+role).value, extra: document.getElementById('addSkillExtra_'+role).value, addedBy: creator }); } 
-            else { const correctOpt = parseInt(document.querySelector(`input[name="addQuestCorrectOpt_${role}"]:checked`).value); customQuestions.push({ id: 'q-'+Date.now(), grade: document.getElementById('addQuestGrade_'+role).value, term: document.getElementById('addQuestTerm_'+role).value, type: "curriculum", category: document.getElementById('addQuestCategory_'+role).value, q: document.getElementById('addQuestText_'+role).value, options: [document.getElementById('addQuestOpt0_'+role).value, document.getElementById('addQuestOpt1_'+role).value, document.getElementById('addQuestOpt2_'+role).value, document.getElementById('addQuestOpt3_'+role).value], correct: correctOpt, addedBy: creator }); }
-            syncToCloud(); document.getElementById(role==='Teacher'?'teacherAddQuestionForm':'sharedAddQuestionForm').reset(); adjustQuestionFormLayout(role); showToast("تمت الإضافة بنجاح!", "emerald"); refreshPlatformUI();
-        }
-
-        function generateAIQuestions(role) {
-            const text = document.getElementById('aiTextbookInput_'+role).value.trim(); const grade = document.getElementById('aiGradeSelect_'+role).value; const term = document.getElementById('aiTermSelect_'+role).value; const category = document.getElementById('aiCategorySelect_'+role).value.trim() || "فهم المقروء";
-            if (!text) return showToast("أدخل فقرة الدرس أولاً!", "rose");
-            if(currentStudent.activityLog) currentStudent.activityLog.addedQuestions = (currentStudent.activityLog.addedQuestions || 0) + 3;
-            const generated = [];
-            
-            generated.push({ grade, term, type: "curriculum", category, q: `[مستوى الفهم المقروء] مِنْ خِلَالِ فَهْمِكَ: مَا الْفِكْرَةُ الرَّئِيسِيَّةُ الَّتِي تَدُورُ حَوْلَهَا الْعِبَارَةُ؟`, options: ["مَوْضُوعُ الْفِقْرَةِ الرَّئِيسِيِّ", "فِكْرَةٌ جَانِبِيَّةٌ صَغِيرَةٌ", "مَوْضُوعٌ آخَرُ بَعِيدٌ", "لَا شَيْءَ مِمَّا سَبَقَ"], correct: 0, addedBy: currentStudent.username });
-            generated.push({ grade, term, type: "curriculum", category, q: `[مستوى التذكر] اسْتَخْرِجْ مِنَ النَّصِّ كَلِمَةً بِمَعْنَى (الْكَلِمَةِ الْمُسْتَهْدَفَةِ) كَمَا وَرَدَتْ فِي السِّياقِ:`, options: ["الْكَلِمَةُ الصَّحِيحَةُ الْمُطَابِقَةُ", "كَلِمَةٌ أُخْرَى خَاطِئَةٌ", "حَرْفُ جَرٍّ أَوْ عَطْفٍ", "فِعْلٌ لَيْسَ لَهُ عِلَاقَةٌ"], correct: 0, addedBy: currentStudent.username });
-            generated.push({ grade, term, type: "curriculum", category, q: `[مستوى التطبيق والتحليل] إِذَا طَبَّقْنَا الْقَاعِدَةَ النَّحْوِيَّةَ/الْإِمْلَائِيَّةَ لِلْكَلِمَةِ الْمُخَطَّطَةِ عَلَى كَلِمَةٍ أُخْرَى مُشَابِهَةٍ، فَمَا هُوَ النِّتَاجُ؟`, options: ["التَّطْبِيقُ السَّلِيمُ لِلْقَاعِدَةِ", "تَطْبِيقٌ بِحَرَكَةٍ خَاطِئَةٍ", "إِجَابَةٌ نَاقِصَةٌ الشُّرُوطِ", "لَا يُمْكِنُ تَطْبِيقُهَا"], correct: 0, addedBy: currentStudent.username });
-            
-            customQuestions.push(...generated); syncToCloud(); soundEngine.playSuccess(); showToast(`تم توليد ${generated.length} أسئلة وفق هرم بلوم! 🧠`, "emerald");
-            document.getElementById('aiTextbookInput_'+role).value = ''; refreshPlatformUI();
         }
     </script>
 </body>
